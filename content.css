@@ -1,0 +1,229 @@
+/* Dock ancorado pelo rodapé do vídeo. left/width/bottom são escritos pelo content.js;
+   ancorar por bottom deixa a legenda crescer pra cima sem remedir altura. */
+#igvc-dock {
+  --igvc-accent: #0095f6;
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  display: flex !important;
+  flex-direction: column;
+  gap: 6px;
+  pointer-events: none; /* só a barra e o menu capturam clique */
+}
+
+#igvc-dock.igvc-off,
+#igvc-bar[hidden],
+#igvc-caps[hidden],
+#igvc-menu[hidden],
+#igvc-panel[hidden],
+#igvc-toast[hidden] {
+  display: none !important;
+}
+
+#igvc-caps {
+  align-self: center;
+  max-width: 92%;
+  padding: 3px 10px;
+  border-radius: 6px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #fff;
+  font: 500 15px/1.35 system-ui, sans-serif;
+  text-align: center;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.9);
+  white-space: pre-wrap;
+}
+
+#igvc-bar {
+  display: flex !important;
+  align-items: center;
+  gap: 5px;
+  box-sizing: border-box;
+  width: 100%;
+  padding: 4px 7px;
+  border-radius: 0 0 6px 6px;
+  background: linear-gradient(to top, rgba(0, 0, 0, 0.85), rgba(0, 0, 0, 0.4));
+  color: #fff;
+  font: 11px/1 system-ui, sans-serif;
+  opacity: 0.88;
+  transition: opacity 0.12s;
+  overflow: hidden;
+  pointer-events: auto;
+}
+#igvc-bar:hover { opacity: 1; }
+
+#igvc-bar button {
+  all: unset;
+  flex: 0 0 auto;
+  cursor: pointer;
+  padding: 2px 3px;
+  border-radius: 4px;
+  font-size: 12px;
+  line-height: 1;
+}
+#igvc-bar button:hover { background: rgba(255, 255, 255, 0.2); }
+#igvc-bar button.on { background: var(--igvc-accent); }
+#igvc-bar [data-a='caps'] { font-size: 10px; font-weight: 700; letter-spacing: 0.5px; }
+
+#igvc-bar select {
+  flex: 0 0 auto;
+  background: rgba(255, 255, 255, 0.15);
+  color: #fff;
+  border: 0;
+  border-radius: 4px;
+  padding: 1px 2px;
+  font: 10px system-ui, sans-serif;
+  cursor: pointer;
+}
+#igvc-bar select option { background: #202024; color: #fff; }
+
+/* Sliders: o Firefox não pinta a parte já reproduzida sozinho, então a cor vem de
+   um gradiente no track controlado pelas vars --p (progresso) e --b (buffer). */
+#igvc-bar input[type='range'] {
+  -moz-appearance: none;
+  appearance: none;
+  background: transparent;
+  height: 12px;
+  margin: 0;
+  min-width: 0;
+  cursor: pointer;
+}
+#igvc-bar input[type='range']::-moz-range-track {
+  height: 4px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.28);
+}
+#igvc-bar input[type='range']::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 0;
+  border-radius: 50%;
+  background: #fff;
+  box-shadow: 0 0 3px rgba(0, 0, 0, 0.6);
+}
+#igvc-seek::-moz-range-track {
+  background: linear-gradient(
+    to right,
+    var(--igvc-accent) 0 var(--p, 0%),
+    rgba(255, 255, 255, 0.55) var(--p, 0%) var(--b, 0%),
+    rgba(255, 255, 255, 0.28) var(--b, 0%) 100%
+  );
+}
+#igvc-vol::-moz-range-track {
+  background: linear-gradient(
+    to right,
+    var(--igvc-accent) 0 var(--p, 0%),
+    rgba(255, 255, 255, 0.28) var(--p, 0%) 100%
+  );
+}
+#igvc-seek { flex: 1 1 auto; }
+#igvc-vol { flex: 0 0 44px; width: 44px; }
+
+#igvc-time {
+  flex: 0 0 auto;
+  font-variant-numeric: tabular-nums;
+  font-size: 10px;
+  opacity: 0.9;
+  white-space: nowrap;
+}
+
+/* Menu do botão ☰ */
+#igvc-menu {
+  position: fixed !important;
+  z-index: 2147483647 !important;
+  min-width: 210px;
+  padding: 5px;
+  border-radius: 8px;
+  background: rgba(24, 24, 27, 0.98);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 8px 28px rgba(0, 0, 0, 0.55);
+}
+#igvc-menu button {
+  all: unset;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 7px 9px;
+  border-radius: 6px;
+  color: #eee;
+  font: 12px/1.2 system-ui, sans-serif;
+}
+#igvc-menu button:hover { background: rgba(255, 255, 255, 0.12); }
+
+/* Painel de texto extraído / lista de downloads */
+#igvc-panel {
+  position: fixed !important;
+  right: 16px;
+  bottom: 16px;
+  z-index: 2147483647 !important;
+  width: min(400px, 92vw);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px;
+  border-radius: 10px;
+  background: rgba(20, 20, 22, 0.97);
+  color: #fff;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.5);
+}
+
+#igvc-panel textarea {
+  width: 100%;
+  height: 200px;
+  resize: vertical;
+  background: #111;
+  color: #eee;
+  border: 1px solid #333;
+  border-radius: 8px;
+  padding: 8px;
+  font: 12px/1.45 system-ui, sans-serif;
+}
+
+#igvc-panel .igvc-cand {
+  all: unset;
+  display: block;
+  width: 100%;
+  box-sizing: border-box;
+  cursor: pointer;
+  padding: 6px 8px;
+  margin-bottom: 4px;
+  border-radius: 6px;
+  background: #202024;
+  color: #ddd;
+  font: 12px/1.3 system-ui, sans-serif;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+#igvc-panel .igvc-cand:hover { background: #2f2f36; }
+
+#igvc-panel > button:last-child {
+  all: unset;
+  cursor: pointer;
+  align-self: flex-end;
+  padding: 4px 10px;
+  border-radius: 6px;
+  background: #0095f6;
+  color: #fff;
+  font: 12px system-ui, sans-serif;
+}
+
+#igvc-toast {
+  position: fixed !important;
+  left: 50%;
+  bottom: 24px;
+  transform: translateX(-50%);
+  z-index: 2147483647 !important;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(20, 20, 22, 0.95);
+  color: #fff;
+  font: 12px system-ui, sans-serif;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.4);
+}
+
+:fullscreen video {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  background: #000;
+}

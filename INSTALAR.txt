@@ -1,0 +1,70 @@
+INSTAGRAM VIDEO CONTROL - como instalar no Firefox
+==================================================
+
+Barra de player nos videos do Instagram: play/pause, barra de progresso,
+volume, velocidade, tela cheia, legendas, download e transcricao da fala.
+
+Funciona SO no Firefox. Nao precisa descompactar este arquivo.
+
+
+PASSO A PASSO
+-------------
+
+1. Abra o Firefox
+
+2. Na barra de endereco, digite:   about:debugging
+   (e tecle Enter)
+
+3. Clique em "Este Firefox", no menu da esquerda
+
+4. Clique no botao "Carregar extensao temporaria..."
+
+5. Selecione este proprio arquivo .zip
+
+6. Abra instagram.com e de play em qualquer video.
+   A barra preta aparece no rodape do video.
+
+
+IMPORTANTE
+----------
+
+A extensao some quando voce fecha o Firefox. Pra usar de novo,
+e so repetir os passos 1 a 5.
+
+Isso e uma regra do Firefox: extensao que nao passou pela revisao
+da Mozilla so pode ser carregada em modo temporario.
+
+
+TECLADO
+-------
+
+espaco ....... pausa / despausa
+setas < > .... volta / avanca 3 segundos
+setas ^ v .... volume
+0 a 9 ........ pula pra 0% - 90% do video
+M ............ muta
+C ............ liga / desliga legendas
+F ............ tela cheia
+Esc .......... sai (fecha menu, painel, tela cheia, ou pausa)
+L ............ repetir
+[ e ] ........ velocidade   (R volta pra 1x)
+D ............ baixar video   (Shift+D lista os arquivos)
+T ............ transcrever a fala
+B ............ traz a barra de volta se voce escondeu
+
+
+LEGENDAS E TRANSCRICAO
+----------------------
+
+Funciona de graca quando o video ja tem legenda.
+
+Quando nao tem, da pra transcrever a fala com Whisper. Pra isso e preciso
+uma chave de API (a do Groq e gratuita: https://console.groq.com/keys).
+
+Configure em:  about:addons -> Instagram Video Control -> Preferencias
+
+Sem chave configurada, nada e enviado pra fora da sua maquina.
+Com chave, o arquivo do video vai pro servico escolhido pra ser transcrito.
+
+
+O arquivo README.md tem a explicacao completa.

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<meta charset="utf-8">
+<title>Instagram Video Control</title>
+<style>
+  body { font: 13px/1.5 system-ui, sans-serif; padding: 16px; max-width: 460px; }
+  h1 { font-size: 15px; margin: 0 0 4px; }
+  p { color: #666; margin: 0 0 14px; }
+  label { display: block; margin: 12px 0 4px; font-weight: 600; }
+  input, select { width: 100%; box-sizing: border-box; padding: 6px; }
+  .row { display: flex; align-items: center; gap: 10px; margin-top: 16px; }
+  #status { color: #128a3a; }
+  small { color: #777; }
+</style>
+
+<h1>Transcrição da fala</h1>
+<p>
+  Só é usada quando o vídeo não tem legenda. O arquivo do vídeo é enviado para o serviço
+  escolhido — se preferir não mandar nada pra fora, deixe a chave em branco.
+</p>
+
+<label for="provider">Serviço</label>
+<select id="provider"></select>
+
+<label for="key">Chave de API</label>
+<input id="key" type="password" placeholder="cole aqui" autocomplete="off">
+<small>Groq: <a href="https://console.groq.com/keys" target="_blank">console.groq.com/keys</a> (gratuita)</small>
+
+<label for="language">Idioma da fala</label>
+<input id="language" type="text" placeholder="pt" autocomplete="off">
+<small>Código ISO: <code>pt</code>, <code>en</code>, <code>es</code>… Em branco, o Whisper detecta sozinho.</small>
+
+<label for="model">Modelo <small>(opcional)</small></label>
+<input id="model" type="text" autocomplete="off">
+
+<div class="row">
+  <button id="save">Salvar</button>
+  <span id="status"></span>
+</div>
+
+<script src="lib.js"></script>
+<script src="options.js"></script>

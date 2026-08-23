@@ -1,0 +1,4 @@
+# artefatos de build: o .zip vai pra Mozilla e o .xpi vira anexo de release,
+# nenhum dos dois precisa estar versionado
+*.zip
+*.xpi

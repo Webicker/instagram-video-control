@@ -1,0 +1,47 @@
+{
+  "manifest_version": 2,
+  "name": "Instagram Video Control",
+  "version": "1.1.1",
+  "description": "Controles completos nos vídeos do Instagram: play/pause, barra de progresso, volume, velocidade, loop, tela cheia, download e transcrição da fala.",
+  "icons": {
+    "48": "icon.svg",
+    "96": "icon.svg"
+  },
+  "browser_specific_settings": {
+    "gecko": {
+      "id": "instagram-video-control@mauricio",
+      "strict_min_version": "115.0",
+      "update_url": "https://raw.githubusercontent.com/Webicker/instagram-video-control/main/updates.json",
+      "data_collection_permissions": {
+        "required": ["none"],
+        "optional": ["websiteContent"]
+      }
+    }
+  },
+  "permissions": [
+    "webRequest",
+    "downloads",
+    "storage",
+    "clipboardWrite",
+    "*://*.instagram.com/*",
+    "*://*.cdninstagram.com/*",
+    "*://*.fbcdn.net/*",
+    "https://api.groq.com/*",
+    "https://api.openai.com/*"
+  ],
+  "content_scripts": [
+    {
+      "matches": ["*://*.instagram.com/*"],
+      "js": ["lib.js", "content.js"],
+      "css": ["content.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "background": {
+    "scripts": ["lib.js", "background.js"]
+  },
+  "options_ui": {
+    "page": "options.html",
+    "browser_style": true
+  }
+}

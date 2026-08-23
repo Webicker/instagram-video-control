@@ -1,0 +1,12 @@
+{
+    "addons":  {
+                   "instagram-video-control@mauricio":  {
+                                                            "updates":  [
+                                                                            {
+                                                                                "version":  "1.1.1",
+                                                                                "update_link":  "https://github.com/Webicker/instagram-video-control/releases/download/v1.1.1/instagram-video-control-1.1.1.xpi"
+                                                                            }
+                                                                        ]
+                                                        }
+               }
+}
