@@ -1,7 +1,7 @@
 {
   "manifest_version": 2,
   "name": "Instagram Video Control",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Controles completos nos vídeos do Instagram: play/pause, barra de progresso, volume, velocidade, loop, tela cheia, download e transcrição da fala.",
   "icons": {
     "48": "icon.svg",

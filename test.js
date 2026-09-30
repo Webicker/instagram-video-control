@@ -1,7 +1,8 @@
 // node test.js
 const assert = require('assert');
 const {
-  cleanUrl, pickNearest, nameFor, vttTime, parseVtt, cuesToText, vttToText, PROVIDERS
+  cleanUrl, byProximity, pickNearest, nameFor, tracksIn,
+  vttTime, parseVtt, cuesToText, vttToText, PROVIDERS
 } = require('./lib.js');
 
 // tira só bytestart/byteend, preserva o resto da query (a URL é assinada)
@@ -17,8 +18,42 @@ assert.strictEqual(pickNearest(list, 1000), 'b');
 assert.strictEqual(pickNearest(list, 200), 'a');
 assert.strictEqual(pickNearest(list, null), 'b'); // sem t0 -> mais recente
 
+assert.deepStrictEqual(byProximity(list, 200).map(x => x.url), ['a', 'b']);
+assert.deepStrictEqual(byProximity(list, null).map(x => x.url), ['b', 'a']);
+assert.deepStrictEqual(list.map(x => x.url), ['a', 'b']); // não mexe no original
+
 assert.strictEqual(nameFor('https://x.com/a/b/1234_n.mp4?oh=1'), 'instagram/1234_n.mp4');
 assert.strictEqual(nameFor('https://x.com/a/seg?oh=1'), 'instagram/seg.mp4');
+
+// --- faixas dentro do mp4 ---
+const box = (type, payload) => {
+  const b = Buffer.alloc(8 + payload.length);
+  b.writeUInt32BE(8 + payload.length, 0);
+  b.write(type, 4, 'latin1');
+  payload.copy(b, 8);
+  return b;
+};
+const ftyp = box('ftyp', Buffer.from('isom', 'latin1'));
+const mp4 = (moovPayload, mdatPayload) =>
+  Buffer.concat([
+    ftyp,
+    box('moov', Buffer.from(moovPayload, 'latin1')),
+    box('mdat', Buffer.from(mdatPayload, 'latin1'))
+  ]);
+
+assert.deepStrictEqual(
+  tracksIn(mp4('....hdlrsoun....hdlrvide', 'lixo')),
+  { audio: true, video: true }
+);
+
+// o caso que justifica a leitura do box: 'soun' solto no mdat nao e faixa de audio
+assert.deepStrictEqual(
+  tracksIn(mp4('....hdlrvide', 'xxsounxx')),
+  { audio: false, video: true }
+);
+
+// sem moov no pedaco lido nao da pra afirmar nada
+assert.strictEqual(tracksIn(Buffer.concat([ftyp, box('mdat', Buffer.from('sounvide'))])), null);
 
 // tempos: com e sem hora, vírgula ou ponto
 assert.strictEqual(vttTime('00:00:02.500'), 2.5);

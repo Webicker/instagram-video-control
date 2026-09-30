@@ -349,7 +349,12 @@
 
   // ---------- download ----------
   async function download(choose) {
-    if (choose) return showList(await browser.runtime.sendMessage({ type: 'list' }));
+    if (choose) {
+      say('Verificando os arquivos…');
+      return showList(
+        await browser.runtime.sendMessage({ type: 'list', t0: active && active.__t0 })
+      );
+    }
     say('Procurando o arquivo…');
     const r = await browser.runtime.sendMessage({
       type: 'download',
@@ -359,23 +364,43 @@
     say(r && r.ok ? 'Baixando…' : (r && r.error) || 'Falhou');
   }
 
-  function showList(urls) {
-    if (!urls || !urls.length) return say('Nenhum .mp4 capturado nesta aba ainda.');
+  // Rótulo do que tem dentro do arquivo, pra você não baixar só pra descobrir que veio mudo.
+  const trackLabel = t => {
+    if (!t) return { text: 'faixas desconhecidas', cls: 'igvc-unknown' };
+    if (t.audio && t.video) return { text: 'vídeo + áudio', cls: 'igvc-full' };
+    if (t.video) return { text: 'só vídeo, sem som', cls: 'igvc-partial' };
+    if (t.audio) return { text: 'só áudio', cls: 'igvc-partial' };
+    return { text: 'sem faixa reconhecida', cls: 'igvc-unknown' };
+  };
+
+  function showList(items) {
+    if (!items || !items.length) return say('Nenhum .mp4 capturado nesta aba ainda.');
     ta.hidden = true;
     listBox.hidden = false;
     listBox.textContent = '';
-    urls.slice(0, 15).forEach((u, i) => {
+    items.forEach((it, i) => {
+      const lab = trackLabel(it.tracks);
       const b = document.createElement('button');
       b.className = 'igvc-cand';
-      b.textContent = `${i + 1}. ${(u.split('?')[0].split('/').pop() || u).slice(0, 60)}`;
-      b.title = u;
+      b.title = it.url;
+
+      const name = document.createElement('span');
+      name.className = 'igvc-cand-name';
+      name.textContent = `${i + 1}. ${(it.url.split('?')[0].split('/').pop() || it.url).slice(0, 48)}`;
+
+      const tag = document.createElement('span');
+      tag.className = 'igvc-cand-tag ' + lab.cls;
+      tag.textContent = lab.text;
+
+      b.append(name, tag);
       b.onclick = async () => {
-        const r = await browser.runtime.sendMessage({ type: 'download', url: u });
+        const r = await browser.runtime.sendMessage({ type: 'download', url: it.url });
         say(r && r.ok ? 'Baixando…' : (r && r.error) || 'Falhou');
       };
       listBox.append(b);
     });
     panel.hidden = false;
+    say('Escolha o arquivo');
   }
 
   const showText = t => {

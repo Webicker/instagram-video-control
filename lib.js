@@ -14,13 +14,36 @@ function cleanUrl(u) {
   }
 }
 
-// Escolhe a URL vista mais perto do instante em que o vídeo começou a tocar.
+// Candidatos ordenados pela proximidade com o instante em que o vídeo começou a tocar.
 // ponytail: heurística de tempo; erra quando vários vídeos carregam juntos —
 // nesse caso o Shift+D abre a lista pra escolher na mão.
+function byProximity(list, t0) {
+  const out = list.slice();
+  if (!t0) return out.reverse(); // sem carimbo: mais recentes primeiro
+  return out.sort((a, b) => Math.abs(a.ts - t0) - Math.abs(b.ts - t0));
+}
+
 function pickNearest(list, t0) {
-  if (!list.length) return null;
-  if (!t0) return list[list.length - 1].url;
-  return list.reduce((a, b) => (Math.abs(b.ts - t0) < Math.abs(a.ts - t0) ? b : a)).url;
+  const sorted = byProximity(list, t0);
+  return sorted.length ? sorted[0].url : null;
+}
+
+// Um mp4 declara cada faixa num box 'hdlr', cujo tipo é 'soun' (áudio) ou 'vide' (vídeo).
+// Esses handlers vivem dentro do 'moov'. Procurar no arquivo inteiro daria falso positivo:
+// os bytes do vídeo (o 'mdat') contêm a mesma sequência por acaso o tempo todo.
+// Devolve null quando o 'moov' não veio no pedaço lido — aí não dá pra afirmar nada.
+function tracksIn(bytes) {
+  let s = '';
+  for (let i = 0; i < bytes.length; i += 8192) {
+    s += String.fromCharCode.apply(null, bytes.subarray(i, i + 8192));
+  }
+  const at = s.indexOf('moov');
+  if (at < 4) return null;
+  // os 4 bytes antes do nome são o tamanho do box, incluindo o cabeçalho de 8
+  const size =
+    ((bytes[at - 4] << 24) | (bytes[at - 3] << 16) | (bytes[at - 2] << 8) | bytes[at - 1]) >>> 0;
+  const moov = s.slice(at, size ? Math.min(s.length, at - 4 + size) : s.length);
+  return { audio: moov.indexOf('soun') !== -1, video: moov.indexOf('vide') !== -1 };
 }
 
 function nameFor(url) {
@@ -96,5 +119,8 @@ const PROVIDERS = {
 };
 
 if (typeof module !== 'undefined') {
-  module.exports = { cleanUrl, pickNearest, nameFor, vttTime, parseVtt, cuesToText, vttToText, PROVIDERS };
+  module.exports = {
+    cleanUrl, byProximity, pickNearest, nameFor, tracksIn,
+    vttTime, parseVtt, cuesToText, vttToText, PROVIDERS
+  };
 }
